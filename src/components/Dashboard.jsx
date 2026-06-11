@@ -1,50 +1,41 @@
 import { useState } from "react";
 
 const CATEGORIES = [
-  { id: "king", label: "Prom King", gender: "Male", required: true, titleClass: "title-king", chipClass: "chip-king", cardClass: "card-king" },
-  { id: "queen", label: "Prom Queen", gender: "Female", required: true, titleClass: "title-queen", chipClass: "chip-queen", cardClass: "card-queen" },
-  { id: "mrsebony", label: "Mrs Ebony", gender: "Female", required: true, titleClass: "title-queen", chipClass: "chip-queen", cardClass: "card-queen" },
-  { id: "mrebony", label: "Mr Ebony", gender: "Male", required: false, titleClass: "title-king", chipClass: "chip-king", cardClass: "card-king" },
-  { id: "lifeOfTheParty", label: "Life of the Party", gender: "Unisex", required: false },
-  { id: "bestDancerMale", label: "Best Dancer (Male)", gender: "Male", required: false },
-  { id: "bestDancerFemale", label: "Best Dancer (Female)", gender: "Female", required: false },
-  { id: "bestGlowUpMale", label: "Best Glow-Up (Male)", gender: "Male", required: false },
-  { id: "bestGlowUpFemale", label: "Best Glow-Up (Female)", gender: "Female", required: false },
-  { id: "mostAthleticMale", label: "Most Athletic (Male)", gender: "Male", required: false },
-  { id: "mostAthleticFemale", label: "Most Athletic (Female)", gender: "Female", required: false },
+  { id: "promKing", label: "Prom King", gender: "Male", required: true, titleClass: "title-king", chipClass: "chip-king", cardClass: "card-king" },
+  { id: "promQueen", label: "Prom Queen", gender: "Female", required: true, titleClass: "title-queen", chipClass: "chip-queen", cardClass: "card-queen" },
+  { id: "brainieeOfTheYear", label: "Brainee of the Year", gender: "Unisex", subtitle: "The Einstein Reloaded Award", required: false },
+  { id: "lifeOfThePartyMale", label: "Life of the Party (Male)", gender: "Male", subtitle: "The Showstopper Award", required: false },
+  { id: "lifeOfThePartyFemale", label: "Life of the Party (Female)", gender: "Female", subtitle: "The Headliner Award", required: false },
   { id: "mostPopularMale", label: "Most Popular (Male)", gender: "Male", required: false },
   { id: "mostPopularFemale", label: "Most Popular (Female)", gender: "Female", required: false },
+  { id: "fashionistaMale", label: "Fashionista (Male)", gender: "Male", subtitle: "Trendsetter of the Year Award", required: false },
+  { id: "fashionistaFemale", label: "Fashionista (Female)", gender: "Female", subtitle: "Style Icon Award", required: false },
+  { id: "bestGlowUpMale", label: "Best Glow-Up (Male)", gender: "Male", subtitle: "The Nova Glow Up Award", required: false },
+  { id: "bestGlowUpFemale", label: "Best Glow-Up (Female)", gender: "Female", subtitle: "Supernova Stunner Award", required: false },
+  { id: "mostCreative", label: "Most Creative", gender: "Unisex", required: false },
+  { id: "funniest", label: "Funniest", gender: "Unisex", subtitle: "The Kevin Hart Award", required: false },
+  { id: "mrPetite", label: "Mr Petite", gender: "Male", required: false },
+  { id: "msPetite", label: "Ms Petite", gender: "Female", required: false },
+  { id: "ballonDor", label: "Ballon D'or Award", gender: "Male", required: false },
   { id: "mostSocialMale", label: "Most Social (Male)", gender: "Male", required: false },
   { id: "mostSocialFemale", label: "Most Social (Female)", gender: "Female", required: false },
-  { id: "twoPeasInAPod", label: "Two Peas In A Pod", gender: "Unisex Pairs", required: false },
-  { id: "bestFriendGroupMale", label: "Best Friend Group (Male)", gender: "Male", required: false },
-  { id: "bestFriendGroupFemale", label: "Best Friend Group (Female)", gender: "Female", required: false },
-  { id: "mostFashionableMale", label: "Most Fashionable (Male)", gender: "Male", required: false },
-  { id: "mostFashionableFemale", label: "Most Fashionable (Female)", gender: "Female", required: false },
-  { id: "bigBoldBeautiful", label: "Big Bold and Beautiful", gender: "Females only...", required: false },
-  { id: "rookieOfTheYear", label: "Rookie Of The Year", gender: "Unisex Award", required: false },
-  { id: "ballonDor", label: "Ballon D'or", gender: "Male", required: false },
+  { id: "bestMaleDancer", label: "Best Male Dancer", gender: "Male", subtitle: "The Pocolee Award", required: false },
+  { id: "bestFemaleDancer", label: "Best Female Dancer", gender: "Female", subtitle: "The Kaffy Award", required: false },
   { id: "mostAttractiveMale", label: "Most Attractive (Male)", gender: "Male", required: false },
   { id: "mostAttractiveFemale", label: "Most Attractive (Female)", gender: "Female", required: false },
-  { id: "hourglass", label: "Hour Glass", gender: "Female", required: false },
-  { id: "fairestOfThemAllMale", label: "Fairest Of Them All (Male)", gender: "Male", required: false },
-  { id: "fairestOfThemAllFemale", label: "Fairest Of Them All (Female)", gender: "Female", required: false },
-  { id: "influencerMale", label: "Influencer Of The Year (Male)", gender: "Male", required: false },
-  { id: "influencerFemale", label: "Influencer Of The Year (Female)", gender: "Female", required: false },
-  { id: "einsteinMale", label: "Einstein Of The Year (Male)", gender: "Male", required: false },
-  { id: "einsteinFemale", label: "Einstein Of The Year (Female)", gender: "Female", required: false },
-  { id: "mostNonchalant", label: "Most Nonchalant", gender: "Male only", required: false },
-  { id: "arabMoneyMale", label: "Arab Money (Male)", gender: "Male", required: false },
-  { id: "arabMoneyFemale", label: "Arab Money (Female)", gender: "Female", required: false },
-  { id: "mrPetite", label: "Mr Petite", gender: "Male", required: false },
-  { id: "mrsPetite", label: "Mrs Petite", gender: "Female", required: false },
+  { id: "ebonyKing", label: "Ebony King", gender: "Male", required: false, titleClass: "title-king", chipClass: "chip-king", cardClass: "card-king" },
+  { id: "ebonyQueen", label: "Ebony Queen", gender: "Female", required: false, titleClass: "title-queen", chipClass: "chip-queen", cardClass: "card-queen" },
+  { id: "bestMusicArtist", label: "Best Music Artist", gender: "Unisex", subtitle: "iSL Idol", required: false },
   { id: "beautyWithBrains", label: "Beauty With Brains", gender: "Female", required: false },
-  { id: "kevinHartMale", label: "Kevin Hart Of The Year (Male)", gender: "Male", required: false },
-  { id: "kevinHartFemale", label: "Kevin Hart Of The Year (Female)", gender: "Female", required: false },
-  { id: "entrepreneurMale", label: "Entrepreneur Of The Year (Male)", gender: "Male", required: false },
-  { id: "entrepreneurFemale", label: "Entrepreneur Of The Year (Female)", gender: "Female", required: false },
-  { id: "mostAesthetic", label: "Most Aesthetic (Best Artist/Drawer)", gender: "Unisex", required: false },
-  { id: "musicArtist", label: "Music Artist of the Year", gender: "Unisex", required: false },
+  { id: "rookieOfTheYear", label: "Rookie of the Year", gender: "Unisex", subtitle: "Transferee of the Year", required: false },
+  { id: "lebronJames", label: "LeBron James of the Year", gender: "Male", required: false },
+  { id: "fairestOfThemAllMale", label: "Fairest of Them All (Male)", gender: "Male", required: false },
+  { id: "fairestOfThemAllFemale", label: "Fairest of Them All (Female)", gender: "Female", required: false },
+  { id: "bigBoldBeautiful", label: "Big Bold and Beautiful", gender: "Female", required: false },
+  { id: "usainBolt", label: "Usain Bolt of the Year", gender: "Male", subtitle: "Best Male Athlete - Track", required: false },
+  { id: "tobiAmusan", label: "Tobi Amusan of the Year", gender: "Female", subtitle: "Best Female Athlete - Track", required: false },
+  { id: "bestDressedMale", label: "Best Dressed (Male)", gender: "Male", required: false },
+  { id: "bestDressedFemale", label: "Best Dressed (Female)", gender: "Female", required: false },
 ];
 
 export default function Dashboard({ seatNo }) {
@@ -52,10 +43,10 @@ export default function Dashboard({ seatNo }) {
     CATEGORIES.reduce((acc, cat) => ({ ...acc, [cat.id]: ["", "", ""] }), {})
   );
 
-  const [errors, setErrors] = useState({ king: false, queen: false, mrsebony: false });
+  const [errors, setErrors] = useState({ promKing: false, promQueen: false });
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Handles slow internet loading state
-  const [apiError, setApiError] = useState(""); // Captures unexpected backend script failures
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const handleInputChange = (categoryId, index, value) => {
     setChoices((prev) => ({
@@ -68,20 +59,18 @@ export default function Dashboard({ seatNo }) {
     }
   };
 
- const handleSubmit = async () => {
-    // Prevent multiple clicks if connection is lagging
+  const handleSubmit = async () => {
     if (isSubmitting) return;
 
     const newErrors = {
-      king: !choices.king[0].trim(),
-      queen: !choices.queen[0].trim(),
-      mrsebony: !choices.mrsebony[0].trim(),
+      promKing: !choices.promKing[0].trim(),
+      promQueen: !choices.promQueen[0].trim(),
     };
 
     setErrors(newErrors);
 
-    if (newErrors.king || newErrors.queen || newErrors.mrsebony) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (newErrors.promKing || newErrors.promQueen) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -89,35 +78,26 @@ export default function Dashboard({ seatNo }) {
     setApiError("");
 
     try {
-      // API call point using standard JavaScript fetch
       const response = await fetch("https://mobilix.com.ng/promawards/submit_votes.php", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ choices: choices, seatNo: seatNo}),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ choices: choices, seatNo: seatNo }),
       });
 
       const result = await response.json();
 
       if (response.ok && result.status === "success") {
         setSubmitted(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        // Grab error message directly from the PHP server script
         setApiError(result.message || "An unexpected error occurred on the ballot server.");
-        
-        // ─── ADDED: LOCK INTERFACE IF USER HAS ALREADY VOTED (403 FORBIDDEN) ───
-        if (response.status === 403) {
-          setSubmitted(true);
-        }
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (response.status === 403) setSubmitted(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (err) {
       console.error("Connection Error: ", err);
       setApiError("Network timeout. Could not connect to the ballot server. Please check your connection.");
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);
     }
@@ -136,23 +116,12 @@ export default function Dashboard({ seatNo }) {
           position: relative;
           overflow: hidden;
         }
-        .orb {
-          position: absolute;
-          border-radius: 50%;
-          pointer-events: none;
-          filter: blur(90px);
-          opacity: 0.16;
-        }
+        .orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(90px); opacity: 0.16; }
         .orb1 { width: 480px; height: 480px; background: #6d28d9; top: -140px; left: -120px; }
         .orb2 { width: 380px; height: 380px; background: #d97706; top: 260px; right: -100px; }
         .orb3 { width: 340px; height: 340px; background: #7c3aed; bottom: 60px; left: 35%; }
         .header { text-align: center; position: relative; z-index: 2; padding-bottom: 2.5rem; }
-        .badge {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: rgba(124, 58, 237, 0.18); border: 1px solid rgba(124, 58, 237, 0.35);
-          border-radius: 100px; padding: 5px 18px; font-size: 11px; font-weight: 600;
-          letter-spacing: 0.13em; text-transform: uppercase; color: #c4b5fd; margin-bottom: 1.25rem;
-        }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(124, 58, 237, 0.18); border: 1px solid rgba(124, 58, 237, 0.35); border-radius: 100px; padding: 5px 18px; font-size: 11px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: #c4b5fd; margin-bottom: 1.25rem; }
         .badge-dot { width: 6px; height: 6px; background: #f59e0b; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.75); } }
         .hero-title { font-size: 3rem; font-weight: 900; color: #ffffff; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
@@ -160,13 +129,14 @@ export default function Dashboard({ seatNo }) {
         .divider-line { width: 56px; height: 2px; background: linear-gradient(90deg, #7c3aed, #f59e0b); border-radius: 2px; margin: 1rem auto; }
         .hero-sub { font-size: 13px; color: rgba(255,255,255,0.38); font-weight: 400; letter-spacing: 0.02em; }
         .form-body { max-width: 640px; margin: 0 auto; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 0.875rem; }
-        .section-head { display: flex; align-items: center; gap: 10px; padding: 1rem 0 0.25rem; }
+        .section-head { display: flex; align-items: center; gap: 10px; padding: 1rem 0 0.25rem; flex-wrap: wrap; }
         .icon-box { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
         .icon-king { background: rgba(245,158,11,0.14); border: 1px solid rgba(245,158,11,0.28); }
         .icon-queen { background: rgba(124,58,237,0.14); border: 1px solid rgba(124,58,237,0.28); }
         .icon-neutral { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
         .section-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
         .section-subtitle { font-size: 11px; color: rgba(255,255,255,0.3); font-weight: 400; margin-left: auto; text-transform: none; letter-spacing: 0; }
+        .award-subtitle { font-size: 10px; color: rgba(255,255,255,0.22); font-weight: 400; letter-spacing: 0.05em; font-style: italic; width: 100%; padding-left: 44px; margin-top: -4px; margin-bottom: 2px; }
         .title-king { color: #fbbf24; }
         .title-queen { color: #c4b5fd; }
         .title-neutral { color: rgba(255,255,255,0.7); }
@@ -181,11 +151,7 @@ export default function Dashboard({ seatNo }) {
         .label-queen { color: rgba(196,181,253,0.6); }
         .label-neutral { color: rgba(255,255,255,0.3); }
         .input-row { position: relative; }
-        .input-row input {
-          width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 10px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 13px;
-          font-weight: 400; padding: 11px 52px 11px 15px; outline: none; transition: all 0.2s;
-        }
+        .input-row input { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400; padding: 11px 52px 11px 15px; outline: none; transition: all 0.2s; }
         .input-row input::placeholder { color: rgba(255,255,255,0.15); }
         .input-row input:focus { border-color: rgba(124,58,237,0.55); background: rgba(124,58,237,0.06); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
         .card-king .input-row input:focus { border-color: rgba(245,158,11,0.55); background: rgba(245,158,11,0.06); box-shadow: 0 0 0 3px rgba(245,158,11,0.1); }
@@ -198,12 +164,7 @@ export default function Dashboard({ seatNo }) {
         .sep hr { flex: 1; border: none; border-top: 1px solid rgba(255,255,255,0.06); }
         .sep span { font-size: 11px; color: rgba(255,255,255,0.12); letter-spacing: 0.08em; }
         .submit-area { padding-top: 2rem; display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
-        .submit-btn {
-          width: 100%; padding: 15px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-          border: none; border-radius: 12px; color: #000; font-family: 'Poppins', sans-serif;
-          font-size: 14px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer;
-          transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden;
-        }
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; border-radius: 12px; color: #000; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; }
         .submit-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%); opacity: 0; transition: opacity 0.2s; }
         .submit-btn:hover::after { opacity: 1; }
         .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(245,158,11,0.28); }
@@ -225,15 +186,9 @@ export default function Dashboard({ seatNo }) {
           <div className="orb orb1" />
           <div className="orb orb2" />
           <div className="success-icon">👑</div>
-          <p className="success-title">
-            You're <span className="gold">All In!</span>
-          </p>
-          <p className="success-sub">
-            Your nominations have been cast. May the best royalty reign on prom night.
-          </p>
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.18)", marginTop: "1rem" }}>
-            Results announced at the ceremony
-          </p>
+          <p className="success-title">You're <span className="gold">All In!</span></p>
+          <p className="success-sub">Your nominations have been cast. May the best royalty reign on prom night.</p>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.18)", marginTop: "1rem" }}>Results announced at the ceremony</p>
         </div>
       )}
 
@@ -247,19 +202,12 @@ export default function Dashboard({ seatNo }) {
             <span className="badge-dot" />
             Class of 2026 - Nominations Open
           </div>
-          <h1 className="hero-title">
-            Prom<br /><span className="gold">Royalty</span> Ballot
-          </h1>
+          <h1 className="hero-title">Prom<br /><span className="gold">Royalty</span> Ballot</h1>
           <div className="divider-line" />
           <p className="hero-sub">Cast your choices for the night's most prestigious honors</p>
         </div>
 
-        {/* SERVER API ERROR ALERT DISPLAY */}
-        {apiError && (
-          <div className="api-error-box">
-            ⚠️ {apiError}
-          </div>
-        )}
+        {apiError && <div className="api-error-box">⚠️ {apiError}</div>}
 
         <div className="form-body">
           {CATEGORIES.map((cat) => {
@@ -270,6 +218,11 @@ export default function Dashboard({ seatNo }) {
             const resolvedCardClass = cat.cardClass || "";
             const resolvedLabelClass = isKingTheme ? "label-king" : cat.gender === "Female" ? "label-queen" : "label-neutral";
             const resolvedChipClass = cat.chipClass || (isKingTheme ? "chip-king" : cat.gender === "Female" ? "chip-queen" : "chip-neutral");
+            const hasError = cat.required && errors[cat.id];
+
+            let cardStyling = `card ${resolvedCardClass}`;
+            if (cat.required) cardStyling += ` ${isKingTheme ? "card-king" : "card-queen"}`;
+            if (hasError) cardStyling += " card-error";
 
             return (
               <div key={cat.id}>
@@ -279,47 +232,27 @@ export default function Dashboard({ seatNo }) {
                     {cat.label} {cat.required && <span className="req">*</span>}
                   </span>
                   <span className="section-subtitle">({cat.gender})</span>
+                  {cat.subtitle && <span className="award-subtitle">— {cat.subtitle}</span>}
                 </div>
 
-                {[0, 1, 2].map((index) => {
-                  const isRequiredField = cat.required && index === 0;
-                  const hasError = isRequiredField && errors[cat.id];
-                  const choiceValue = choices[cat.id][index];
-
-                  let cardStyling = `card ${resolvedCardClass}`;
-                  if (isRequiredField) cardStyling += ` ${isKingTheme ? "card-king" : "card-queen"}`;
-                  if (hasError) cardStyling += " card-error";
-
-                  return (
-                    <div className={cardStyling} key={index}>
-                      <div className={`card-label ${resolvedLabelClass}`}>
-                        {index === 0 ? "1st Choice" : index === 1 ? "2nd Choice" : "3rd Choice"} 
-                        {isRequiredField ? " — Required" : " — Optional"}
-                      </div>
-                      <div className="input-row">
-                        <input
-                          type="text"
-                          value={choiceValue}
-                          onChange={(e) => handleInputChange(cat.id, index, e.target.value)}
-                          disabled={isSubmitting} // Lock components during submit processing
-                          placeholder={
-                            cat.id === "twoPeasInAPod" || cat.id === "bestFriendGroupMale" || cat.id === "bestFriendGroupFemale"
-                              ? "e.g. Names of the group/pair members"
-                              : "Full name of your nominee"
-                          }
-                        />
-                        <span className={`chip ${index === 0 ? resolvedChipClass : "chip-neutral"}`}>
-                          #{index + 1}
-                        </span>
-                      </div>
-                      {hasError && (
-                        <div className="error-row">
-                          <span>⚠</span> This is a required field
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                <div className={cardStyling}>
+                  <div className={`card-label ${resolvedLabelClass}`}>
+                    Your Nomination {cat.required ? "— Required" : "— Optional"}
+                  </div>
+                  <div className="input-row">
+                    <input
+                      type="text"
+                      value={choices[cat.id][0]}
+                      onChange={(e) => handleInputChange(cat.id, 0, e.target.value)}
+                      disabled={isSubmitting}
+                      placeholder="Full name of your nominee"
+                    />
+                    <span className={`chip ${resolvedChipClass}`}>✦</span>
+                  </div>
+                  {hasError && (
+                    <div className="error-row"><span>⚠</span> This is a required field</div>
+                  )}
+                </div>
 
                 <div className="sep"><hr /><span>· · ·</span><hr /></div>
               </div>
@@ -327,17 +260,12 @@ export default function Dashboard({ seatNo }) {
           })}
 
           <div className="submit-area">
-            <button 
-              className="submit-btn" 
-              onClick={handleSubmit} 
-              disabled={isSubmitting}
-            >
+            <button className="submit-btn" onClick={handleSubmit} disabled={isSubmitting}>
               <span>{isSubmitting ? "⏳" : "🎟"}</span>
               {isSubmitting ? "Casting Ballots Securely..." : "Submit My Nominations"}
             </button>
             <p className="submit-note">Your vote is anonymous · One submission per student</p>
           </div>
-
         </div>
       </div>
     </>
