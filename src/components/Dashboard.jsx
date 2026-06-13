@@ -34,8 +34,8 @@ const CATEGORIES = [
   { id: "bigBoldBeautiful", label: "Big Bold and Beautiful", gender: "Female", required: false },
   { id: "usainBolt", label: "Usain Bolt of the Year", gender: "Male", subtitle: "Best Male Athlete - Track", required: false },
   { id: "tobiAmusan", label: "Tobi Amusan of the Year", gender: "Female", subtitle: "Best Female Athlete - Track", required: false },
-  { id: "bestDressedMale", label: "Best Dressed (Male)", gender: "Male", required: false },
-  { id: "bestDressedFemale", label: "Best Dressed (Female)", gender: "Female", required: false },
+  { id: "businessGuruFemale", label: "Business Guru Of The Year (Female)", gender: "Female", required: true },
+  { id: "businessGuruMale", label: "Business Guru Of The Year (Male)", gender: "Male", required: true },
 ];
 
 export default function Dashboard({ seatNo }) {
