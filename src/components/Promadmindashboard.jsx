@@ -721,7 +721,14 @@ function RightPanelContent({ nominationsData, categoryBreakdownData, recentFeed 
           return (
             <div className="feed-item" key={n.id}>
               <div className="feed-avatar" style={{ background: cat.bg }}>
-                {n.category_id === "Prom King" ? "👑" : n.category_id === "Prom Queen" ? "💎" : n.category_id === "Best Couple" ? "✨" : "🌟"}
+                {n.category_id === "promKing" ? "👑" 
+  : n.category_id === "promQueen" ? "💎" 
+  : n.category_id === "ebonyKing" ? "👑" 
+  : n.category_id === "ebonyQueen" ? "💎"
+  : n.category_id === "businessGuruMale" || n.category_id === "businessGuruFemale" ? "💼"
+  : n.category_id.toLowerCase().includes("male") || n.category_id.toLowerCase().includes("king") ? "👑"
+  : n.category_id.toLowerCase().includes("female") || n.category_id.toLowerCase().includes("queen") ? "💎"
+  : "✨"}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="feed-name" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{n.nominee_name}</div>
