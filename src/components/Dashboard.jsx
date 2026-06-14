@@ -43,7 +43,9 @@ export default function Dashboard({ seatNo }) {
     CATEGORIES.reduce((acc, cat) => ({ ...acc, [cat.id]: ["", "", ""] }), {})
   );
 
-  const [errors, setErrors] = useState({ promKing: false, promQueen: false });
+  const [errors, setErrors] = useState(() =>
+  CATEGORIES.filter(c => c.required).reduce((acc, c) => ({ ...acc, [c.id]: false }), {})
+);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
@@ -60,12 +62,18 @@ export default function Dashboard({ seatNo }) {
   };
 
   const handleSubmit = async () => {
-    if (isSubmitting) return;
+  if (isSubmitting) return;
 
-    const newErrors = {
-      promKing: !choices.promKing[0].trim(),
-      promQueen: !choices.promQueen[0].trim(),
-    };
+  const newErrors = CATEGORIES
+    .filter(c => c.required)
+    .reduce((acc, c) => ({ ...acc, [c.id]: !choices[c.id][0].trim() }), {});
+
+  setErrors(newErrors);
+
+  if (Object.values(newErrors).some(Boolean)) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
 
     setErrors(newErrors);
 
@@ -92,6 +100,7 @@ export default function Dashboard({ seatNo }) {
       } else {
         setApiError(result.message || "An unexpected error occurred on the ballot server.");
         if (response.status === 403) setSubmitted(true);
+
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (err) {

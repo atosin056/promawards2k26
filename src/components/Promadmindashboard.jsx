@@ -13,10 +13,10 @@ const RANK_BADGE = {
 };
 
 const CAT_COLOR = {
-  "Prom King":   { bg: "rgba(245,158,11,0.15)", color: "#fbbf24" },
-  "Prom Queen":  { bg: "rgba(124,58,237,0.15)", color: "#c4b5fd" },
-  "Best Couple": { bg: "rgba(236,72,153,0.15)", color: "#f9a8d4" },
-  "Most Likely": { bg: "rgba(6,182,212,0.15)",  color: "#67e8f9" },
+  "promKing":          { bg: "rgba(245,158,11,0.15)",  color: "#fbbf24" },
+  "promQueen":         { bg: "rgba(124,58,237,0.15)",  color: "#c4b5fd" },
+  "businessGuruMale":  { bg: "rgba(6,182,212,0.15)",   color: "#67e8f9" },
+  "businessGuruFemale":{ bg: "rgba(236,72,153,0.15)",  color: "#f9a8d4" },
 };
 
 const NAV_ITEMS = [
@@ -84,7 +84,7 @@ export default function Promadmindashboard() {
     return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
   })();
 
-  const categories = ["All", ...Object.keys(CAT_COLOR)];
+  const categories = ["All", ...new Set(nominationsData.map(n => n.category_id))];
 
   const filtered = nominationsData.filter((n) => {
     const matchSearch = n.nominee_name.toLowerCase().includes(search.toLowerCase()) ||
