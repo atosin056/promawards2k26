@@ -75,43 +75,34 @@ export default function Dashboard({ seatNo }) {
     return;
   }
 
-    setErrors(newErrors);
+  setIsSubmitting(true);
+  setApiError("");
 
-    if (newErrors.promKing || newErrors.promQueen) {
+  try {
+    const response = await fetch("https://mobilix.com.ng/promawards/submit_votes.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ choices: choices, seatNo: seatNo }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.status === "success") {
+      setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    setIsSubmitting(true);
-    setApiError("");
-
-    try {
-      const response = await fetch("https://mobilix.com.ng/promawards/submit_votes.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ choices: choices, seatNo: seatNo }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.status === "success") {
-        setSubmitted(true);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        setApiError(result.message || "An unexpected error occurred on the ballot server.");
-        if (response.status === 403) setSubmitted(true);
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } catch (err) {
-      console.error("Connection Error: ", err);
-      setApiError("Network timeout. Could not connect to the ballot server. Please check your connection.");
+    } else {
+      setApiError(result.message || "An unexpected error occurred on the ballot server.");
+      if (response.status === 403) setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } finally {
-      setIsSubmitting(false);
     }
-  };
-
+  } catch (err) {
+    console.error("Connection Error: ", err);
+    setApiError("Network timeout. Could not connect to the ballot server. Please check your connection.");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   return (
     <>
       <style>{`
