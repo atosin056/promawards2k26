@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Promadmindashboard from "./components/Promadmindashboard";
 import Adminlogin from "./components/Adminlogin";
+import Closed from "./components/Closed";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +21,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Student flow */}
-          <Route
+          {/* <Route
             path="/"
             element={
               isLoggedIn ? (
@@ -28,6 +29,12 @@ function App() {
               ) : (
                 <Login onLoginSuccess={handleLoginSuccess} />
               )
+            }
+          /> */}
+          <Route
+            path="/"
+            element={
+              <Closed />
             }
           />
 
