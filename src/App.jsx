@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Promadmindashboard from "./components/Promadmindashboard";
 import Adminlogin from "./components/Adminlogin";
 import Closed from "./components/Closed";
+import Voting from "./components/Voting";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,12 +26,18 @@ function App() {
             path="/"
             element={
               isLoggedIn ? (
-                <Dashboard seatNo={seatNo} />
+                <Voting seatNo={seatNo} />
               ) : (
                 <Login onLoginSuccess={handleLoginSuccess} />
               )
             }
           />
+          {/* <Route
+            path="/"
+            element={
+              <Voting />
+            }
+            /> */}
           {/* <Route
             path="/"
             element={
