@@ -21,7 +21,7 @@ const TOP_NOMINEES = {
   bestMaleDancer: ["Kayowa", "Zane", "Semilore", "Muhammed"],
   // ✅ No change
 
-  bestMusicArtist: ["Nathan", "Semilore (Maylee)", "Mololuwa", "Maylee"],
+  bestMusicArtist: ["Nathan", "Semilore (Maylee)", "Mololuwa"],
   // ✅ Rank 2 corrected: was "Semilore", should be "Semilore (Maylee)" (they are one nominee per sheet)
   // ⚠️ Only 3 nominees shown in sheet for this award — "Maylee" as rank 4 may need review
 
