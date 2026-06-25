@@ -94,10 +94,10 @@ const TOP_NOMINEES = {
   msPetite: ["Chizoba", "Otu favour", "Adewuyi ameerah", "Mudashiru Rodiat"],
   // ✅ No change
 
-  promKing: ["Zane", "Leke", "Ehuwa obanla", "Olayemi Dara"],
-  // ✅ No change
+  // promKing: ["Zane", "Leke", "Ehuwa obanla", "Olayemi Dara"],
+  // // ✅ No change
 
-  promQueen: ["Jemima", "Abioye Rodiah", "Gobir Maryam", "Ojinika"],
+  // promQueen: ["Jemima", "Abioye Rodiah", "Gobir Maryam", "Ojinika"],
   // ✅ No change
 
   rookieOfTheYear: ["Ese", "Wesey", "Okusanya David", "Alex"],
@@ -111,8 +111,8 @@ const TOP_NOMINEES = {
 };
 
 const ALL_CATEGORIES = [
-  { id: "promKing",               label: "Prom King",                          gender: "Male",   is_required: true  },
-  { id: "promQueen",              label: "Prom Queen",                         gender: "Female", is_required: true  },
+  // { id: "promKing",               label: "Prom King",                          gender: "Male",   is_required: true  },
+  // { id: "promQueen",              label: "Prom Queen",                         gender: "Female", is_required: true  },
   { id: "businessGuruMale",       label: "Business Guru Of The Year (Male)",   gender: "Male",   is_required: true  },
   { id: "businessGuruFemale",     label: "Business Guru Of The Year (Female)", gender: "Female", is_required: true  },
   { id: "ballonDor",              label: "Ballon D'or",                        gender: "Male",   is_required: false },
