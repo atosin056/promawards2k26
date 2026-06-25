@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Crown, Gem, Sparkles, Check } from "lucide-react";
 
 const TOP_NOMINEES = {
-  ballonDor: ["Fagbulu", "Jubril", "Azeez", "Fagzzy"],
+  ballonDor: ["Fagbulu", "Jubril", "Azeez",],
   // ✅ No change — Fagzzy was rank 4 (merged from raw variants, not shown in extract but 4th slot retained)
   // ⚠️ Actually the sheet only shows 3 nominees for Ballon D'or. "Fagzzy" may need manual review.
 
