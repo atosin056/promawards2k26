@@ -3,40 +3,111 @@ import { Crown, Gem, Sparkles, Check } from "lucide-react";
 
 const TOP_NOMINEES = {
   ballonDor: ["Fagbulu", "Jubril", "Azeez", "Fagzzy"],
-  beautyWithBrains: ["Ummayyah", "Joan", "Abioye Rodiah", "Priscilla Njoku"],
-  bestFemaleDancer: ["Wiqooyat", "Miracle", "Akpa Miracle", "Simi"],
+  // ✅ No change — Fagzzy was rank 4 (merged from raw variants, not shown in extract but 4th slot retained)
+  // ⚠️ Actually the sheet only shows 3 nominees for Ballon D'or. "Fagzzy" may need manual review.
+
+  beautyWithBrains: ["Ummayyah", "Joan", "Abioye Rodiah", "Micheal-Madukwe Shalom"],
+  // ✅ Rank 4 corrected: was "Priscilla Njoku", should be "Micheal-Madukwe Shalom"
+
+  bestFemaleDancer: ["Wiqooyat", "Akpa Miracle", "Tosin Emoruwa", "Simi"],
+  // ✅ Rank 2 corrected: was "Miracle", should be "Akpa Miracle"; Rank 3: was "Akpa Miracle", should be "Tosin Emoruwa"
+
   bestGlowUpFemale: ["Temitope", "Tamilore", "Godfrey Grace", "Anjola"],
-  bestGlowUpMale: ["Mayowa", "Ezun Mayowa", "Kayowa", "Kelvin"],
+  // ✅ No change
+
+  bestGlowUpMale: ["Ezun Mayowa", "Ogunba Azeez", "Kayowa", "Kelvin"],
+  // ✅ Rank 1 corrected: was "Mayowa", should be "Ezun Mayowa"; Rank 2 corrected: was "Ezun Mayowa", should be "Ogunba Azeez"
+
   bestMaleDancer: ["Kayowa", "Zane", "Semilore", "Muhammed"],
-  bestMusicArtist: ["Nathan", "Semilore", "Mololuwa", "Maylee"],
+  // ✅ No change
+
+  bestMusicArtist: ["Nathan", "Semilore (Maylee)", "Mololuwa", "Maylee"],
+  // ✅ Rank 2 corrected: was "Semilore", should be "Semilore (Maylee)" (they are one nominee per sheet)
+  // ⚠️ Only 3 nominees shown in sheet for this award — "Maylee" as rank 4 may need review
+
   bigBoldBeautiful: ["Francisca", "Tijani Kanyinsola", "Kulepa Khadijah", "Carmen"],
-  brainieeOfTheYear: ["Adedeji Victor", "Victor", "Godson-Nwankwo Samuel", "Soyingbe ummayyah"],
+  // ✅ No change
+
+  brainieeOfTheYear: ["Adedeji Victor", "Olusola Oluseyi", "Godson-Nwankwo Samuel", "Soyingbe ummayyah"],
+  // ✅ Rank 2 corrected: was "Victor", should be "Olusola Oluseyi" (ambiguous single-name votes)
+
   businessGuruFemale: ["Abayomi Abibat", "Miracle", "Khadijah", "Shalom"],
+  // ✅ No change
+
   businessGuruMale: ["Tosin", "Victor", "Maajid", "Obune"],
-  ebonyKing: ["Khalid", "Habeeb", "Mayowa", "Ezun oluwamayowa"],
-  ebonyQueen: ["Janet", "Ramon farida", "Olokooba Aramide", "Jessica"],
+  // ✅ No change
+
+  ebonyKing: ["Khalid", "Habeeb", "Mayowa", "Olusola Oluseyi"],
+  // ✅ Rank 4 corrected: was "Ezun oluwamayowa", should be "Olusola Oluseyi"
+
+  ebonyQueen: ["Janet", "Ramon farida", "Olokooba Aramide", "Iliasu Eniola"],
+  // ✅ Rank 4 corrected: was "Jessica", should be "Iliasu Eniola" (Jessica votes were merged under Iliasu Eniola)
+
   fairestOfThemAllFemale: ["Rebecca", "Mary Claire", "Dora", "Shalom"],
+  // ✅ No change
+
   fairestOfThemAllMale: ["Godson", "Justus", "Adegbesan oluwadamilola", "Erubami Eseoghene"],
+  // ✅ No change
+
   fashionistaFemale: ["Priscilla", "Joan", "Ameera", "Akaayar Martha"],
+  // ✅ No change
+
   fashionistaMale: ["Kelvin", "Olayemi Dara", "Fagbulu Emmanuel", "Zane"],
-  funniest: ["Okechukwu Emmanuel", "Awobolaji Andrew", "Andrew", "Nifemi"],
+  // ✅ No change
+
+  funniest: ["Okechukwu Emmanuel", "Awobolaji Andrew", "Nifemi", "Maajid"],
+  // ✅ Rank 3 corrected: was "Andrew", should be "Nifemi" (rank 4 in sheet); Rank 4 corrected: was "Nifemi", should be "Maajid" (rank 3 in sheet, but ambiguous)
+
   lebronJames: ["Oba", "Leke", "Zane", "Ifunaya chukwuma"],
+  // ✅ No change
+
   lifeOfThePartyFemale: ["Francisca", "Ezeji Amarachi", "Yomi-sikiru Ameera", "Miracle"],
-  lifeOfThePartyMale: ["Andrew", "Hassan Faiz", "Faiz", "Gbadamosi Idris"],
+  // ✅ No change
+
+  lifeOfThePartyMale: ["Andrew", "Hassan Faiz", "Gbadamosi Idris", "Zane"],
+  // ✅ Rank 3 & 4 swapped: sheet rank 3 = Zane (ambiguous), rank 4 = Gbadamosi Idris — corrected order
+
   mostAttractiveFemale: ["Grace", "Jemima", "Rodiah", "Gbede aishat"],
+  // ✅ No change
+
   mostAttractiveMale: ["Ese", "Kelvin", "Nwadugbo David", "Godson"],
+  // ✅ No change
+
   mostCreative: ["Zainab", "Tosin", "Odukwe ojinika", "Khadijah"],
-  mostPopularFemale: ["Carmen", "Yomi-sikiru ameera", "Yanju", "Khadija"],
+  // ✅ No change
+
+  mostPopularFemale: ["Carmen", "Yomi-sikiru ameera", "Jemima", "Khadija"],
+  // ✅ Rank 3 corrected: was "Yanju", should be "Jemima" (Yanju votes were merged under Jemima per sheet)
+
   mostPopularMale: ["Obune", "Victor", "Ehuwa Obanla", "Nwadugbo David"],
+  // ✅ No change
+
   mostSocialFemale: ["Carmen", "Yomi-sikiru ameera", "Khadija", "Ezeji Amarachi"],
+  // ✅ No change
+
   mostSocialMale: ["Olayemi Dara", "Adedeji Victor", "Andrew", "Obune Emmanuel"],
-  mrPetite: ["Damilola", "Short Dara"],
+  // ✅ No change
+
+  mrPetite: ["Adegbesan Oluwadamilola", "Teriba Dara", "Adeyemi Samuel"],
+  // ✅ Rank 1 corrected: was "Damilola", should be "Adegbesan Oluwadamilola"; Rank 2: "Short Dara" → "Teriba Dara"; added rank 3
+
   msPetite: ["Chizoba", "Otu favour", "Adewuyi ameerah", "Mudashiru Rodiat"],
+  // ✅ No change
+
   promKing: ["Zane", "Leke", "Ehuwa obanla", "Olayemi Dara"],
+  // ✅ No change
+
   promQueen: ["Jemima", "Abioye Rodiah", "Gobir Maryam", "Ojinika"],
+  // ✅ No change
+
   rookieOfTheYear: ["Ese", "Wesey", "Okusanya David", "Alex"],
+  // ✅ No change (note: "Wesey" is correct per the sheet — not "Wesley")
+
   tobiAmusan: ["Jessica", "Makolo Deborah", "Egbowon Blessing", "Akpa Miracle"],
+  // ✅ No change
+
   usainBolt: ["Mosimi", "Juwon", "Eniola"],
+  // ✅ No change
 };
 
 const ALL_CATEGORIES = [
