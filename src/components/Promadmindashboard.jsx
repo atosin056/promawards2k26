@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react"; // useMemo still used in ResultsView
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell,
@@ -30,6 +30,14 @@ const CAT_EMOJI = (id) => {
   if (id.toLowerCase().includes("funny") || id.toLowerCase().includes("funniest")) return "😂";
   if (id.toLowerCase().includes("sport") || id.toLowerCase().includes("bolt") || id.toLowerCase().includes("lebron") || id.toLowerCase().includes("amusan")) return "🏅";
   return "✨";
+};
+
+// Turn a nominee's name into two-letter initials for the avatar badge
+const getInitials = (name) => {
+  if (!name) return "—";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return parts[0].slice(0, 2).toUpperCase();
 };
 
 // All award categories (matching voting form — promKing/Queen included for results)
@@ -93,10 +101,13 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-// ── RESULTS VIEW ─────────────────────────────────────────────────────────────
+// ── RESULTS VIEW (one category at a time, swipeable) ─────────────────────────
 function ResultsView({ nominationsData }) {
-  const [openCat, setOpenCat] = useState(null);
+  const [index, setIndex] = useState(0);
   const [searchCat, setSearchCat] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
 
   // Tally votes per category per nominee
   const tally = useMemo(() => {
@@ -108,148 +119,199 @@ function ResultsView({ nominationsData }) {
     return map;
   }, [nominationsData]);
 
-  const filteredCats = ALL_CATEGORIES.filter((c) =>
-    c.label.toLowerCase().includes(searchCat.toLowerCase())
-  );
+  const cat = ALL_CATEGORIES[index];
+  const catTally = tally[cat.id] || {};
+  const sorted = Object.entries(catTally).sort((a, b) => b[1] - a[1]);
+  const totalVotes = sorted.reduce((s, [, v]) => s + v, 0);
+  const leader = sorted[0];
+  const runnerUp = sorted[1];
+  const rest = sorted.slice(2);
+  const catStyle = CAT_COLOR[cat.id] || { bg: "rgba(124,58,237,0.12)", color: "#c4b5fd" };
+  const leaderPct = leader ? Math.round((leader[1] / totalVotes) * 100) : 0;
+  const runnerPct = runnerUp ? Math.round((runnerUp[1] / totalVotes) * 100) : 0;
+
+  const goPrev = () => setIndex((i) => (i - 1 + ALL_CATEGORIES.length) % ALL_CATEGORIES.length);
+  const goNext = () => setIndex((i) => (i + 1) % ALL_CATEGORIES.length);
+
+  const jumpTo = (id) => {
+    const i = ALL_CATEGORIES.findIndex((c) => c.id === id);
+    if (i !== -1) setIndex(i);
+    setSearchCat("");
+    setShowDropdown(false);
+  };
+
+  // Swipe handling — horizontal swipe changes category, vertical scroll is untouched
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      dx > 0 ? goPrev() : goNext();
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const matches = searchCat
+    ? ALL_CATEGORIES.filter((c) => c.label.toLowerCase().includes(searchCat.toLowerCase()))
+    : [];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Search bar */}
-      <input
-        className="search-box"
-        placeholder="🔍 Filter categories..."
-        value={searchCat}
-        onChange={(e) => setSearchCat(e.target.value)}
-        style={{ maxWidth: 340 }}
-      />
-
-      {filteredCats.map((cat) => {
-        const catTally = tally[cat.id] || {};
-        const sorted = Object.entries(catTally).sort((a, b) => b[1] - a[1]);
-        const totalVotes = sorted.reduce((s, [, v]) => s + v, 0);
-        const leader = sorted[0];
-        const isOpen = openCat === cat.id;
-        const catStyle = CAT_COLOR[cat.id] || { bg: "rgba(124,58,237,0.12)", color: "#c4b5fd" };
-
-        return (
-          <div key={cat.id} className="panel" style={{ overflow: "visible" }}>
-            {/* Category header — always visible, clickable */}
-            <div
-              onClick={() => setOpenCat(isOpen ? null : cat.id)}
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "16px 22px", cursor: "pointer", userSelect: "none",
-                borderBottom: isOpen ? "1px solid rgba(255,255,255,0.05)" : "none",
-                transition: "background 0.15s",
-              }}
-              className="results-cat-header"
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{
-                  width: 36, height: 36, borderRadius: 10,
-                  background: catStyle.bg,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 17, flexShrink: 0,
-                }}>
-                  {CAT_EMOJI(cat.id)}
+      {/* Jump-to-category search */}
+      <div style={{ position: "relative", maxWidth: 340 }}>
+        <input
+          className="search-box"
+          placeholder="🔍 Jump to a category..."
+          value={searchCat}
+          onChange={(e) => { setSearchCat(e.target.value); setShowDropdown(true); }}
+          onFocus={() => setShowDropdown(true)}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 120)}
+        />
+        {showDropdown && searchCat && (
+          <div className="cat-dropdown">
+            {matches.length === 0 ? (
+              <div className="cat-dropdown-empty">No matching category</div>
+            ) : (
+              matches.slice(0, 8).map((c) => (
+                <div key={c.id} className="cat-dropdown-item" onMouseDown={() => jumpTo(c.id)}>
+                  <span>{CAT_EMOJI(c.id)}</span> {c.label}
                 </div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{cat.label}</div>
-                  {leader ? (
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginTop: 1 }}>
-                      Leading: <span style={{ color: catStyle.color, fontWeight: 600 }}>{leader[0]}</span>
-                      {" "}· {totalVotes} vote{totalVotes !== 1 ? "s" : ""}
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", marginTop: 1 }}>No votes yet</div>
-                  )}
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                {leader && (
-                  <span style={{
-                    padding: "3px 10px", borderRadius: 100, fontSize: 10, fontWeight: 700,
-                    background: "rgba(245,158,11,0.15)", color: "#fbbf24",
-                    border: "1px solid rgba(245,158,11,0.3)",
-                  }}>
-                    {leader[1]} vote{leader[1] !== 1 ? "s" : ""}
-                  </span>
-                )}
-                <span style={{
-                  fontSize: 16, color: "rgba(255,255,255,0.3)",
-                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 0.2s", display: "inline-block",
-                }}>▾</span>
-              </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Prev / Next nav */}
+      <div className="carousel-nav">
+        <button className="carousel-btn" onClick={goPrev} aria-label="Previous category">‹</button>
+        <div className="carousel-counter">
+          <div className="carousel-cat-label">{CAT_EMOJI(cat.id)} {cat.label}</div>
+          <div className="carousel-pos">{index + 1} / {ALL_CATEGORIES.length}</div>
+        </div>
+        <button className="carousel-btn" onClick={goNext} aria-label="Next category">›</button>
+      </div>
+
+      {/* Duel card — swipeable on mobile */}
+      <div
+        className="panel duel-card-panel"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="duel-card-head">
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 9, background: catStyle.bg,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0,
+            }}>
+              {CAT_EMOJI(cat.id)}
             </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{cat.label}</div>
+          </div>
+          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>
+            {totalVotes} vote{totalVotes !== 1 ? "s" : ""}
+          </span>
+        </div>
 
-            {/* Expanded vote breakdown */}
-            {isOpen && (
-              <div style={{ padding: "14px 22px 18px" }}>
-                {sorted.length === 0 ? (
-                  <p style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, textAlign: "center", padding: "12px 0" }}>
-                    No votes recorded for this category yet.
-                  </p>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {sorted.map(([name, count], idx) => {
+        <div style={{ padding: "18px 22px 20px" }}>
+          {sorted.length === 0 ? (
+            <p className="no-votes-msg">No votes recorded for this category yet.</p>
+          ) : (
+            <>
+              {/* Head-to-head duel: 1st vs 2nd */}
+              <div className="duel-wrap">
+                <div className="duel-side">
+                  <div
+                    className="duel-avatar"
+                    style={{ background: `linear-gradient(135deg, ${RANK_BADGE[1].color}, ${catStyle.color})` }}
+                  >
+                    {getInitials(leader[0])}
+                  </div>
+                  <div className="duel-name">{leader[0]}</div>
+                  <div className="duel-tag" style={{ color: RANK_BADGE[1].color }}>1st Place</div>
+                </div>
+
+                <div className="duel-mid">
+                  <div className="duel-score">
+                    <span style={{ color: RANK_BADGE[1].color }}>{leader[1]}</span>
+                    <span className="duel-dash">–</span>
+                    <span style={{ color: runnerUp ? RANK_BADGE[2].color : "rgba(255,255,255,0.2)" }}>
+                      {runnerUp ? runnerUp[1] : 0}
+                    </span>
+                  </div>
+                  <div className="duel-vs-badge">VS</div>
+                </div>
+
+                <div className="duel-side">
+                  <div
+                    className="duel-avatar"
+                    style={{
+                      background: runnerUp
+                        ? `linear-gradient(135deg, ${RANK_BADGE[2].color}, rgba(255,255,255,0.15))`
+                        : "rgba(255,255,255,0.05)",
+                      color: runnerUp ? "#0d0b14" : "rgba(255,255,255,0.2)",
+                    }}
+                  >
+                    {runnerUp ? getInitials(runnerUp[0]) : "—"}
+                  </div>
+                  <div className="duel-name" style={{ color: runnerUp ? "#fff" : "rgba(255,255,255,0.25)" }}>
+                    {runnerUp ? runnerUp[0] : "No challenger yet"}
+                  </div>
+                  <div className="duel-tag" style={{ color: runnerUp ? RANK_BADGE[2].color : "rgba(255,255,255,0.2)" }}>
+                    2nd Place
+                  </div>
+                </div>
+              </div>
+
+              {/* Dominance bar */}
+              <div className="dominance-wrap">
+                <div className="dominance-labels">
+                  <span style={{ color: RANK_BADGE[1].color }}>{leaderPct}%</span>
+                  <span className="dominance-caption">DOMINANCE</span>
+                  <span style={{ color: runnerUp ? RANK_BADGE[2].color : "rgba(255,255,255,0.25)" }}>
+                    {runnerPct}%
+                  </span>
+                </div>
+                <div className="dominance-bar">
+                  <div
+                    className="dominance-fill"
+                    style={{ width: `${leaderPct}%`, background: RANK_BADGE[1].color }}
+                  />
+                </div>
+              </div>
+
+              {/* Remaining nominees */}
+              {rest.length > 0 && (
+                <div className="others-wrap">
+                  <div className="others-title">Other Nominees ({rest.length})</div>
+                  <div className="others-list">
+                    {rest.map(([name, count], i) => {
                       const pct = Math.round((count / totalVotes) * 100);
-                      const isWinner = idx === 0;
-                      const barColor =
-                        idx === 0 ? "#fbbf24" :
-                        idx === 1 ? "#c4b5fd" :
-                        idx === 2 ? "#67e8f9" :
-                        "rgba(255,255,255,0.25)";
-
                       return (
-                        <div key={name}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                              {/* Rank badge */}
-                              <span style={{
-                                width: 22, height: 22, borderRadius: 7, fontSize: 9, fontWeight: 700,
-                                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                                background: isWinner ? "rgba(245,158,11,0.18)" : "rgba(255,255,255,0.05)",
-                                color: isWinner ? "#fbbf24" : "rgba(255,255,255,0.3)",
-                                border: `1px solid ${isWinner ? "rgba(245,158,11,0.35)" : "rgba(255,255,255,0.08)"}`,
-                              }}>
-                                {idx + 1}
-                              </span>
-                              <span style={{
-                                fontSize: 13, fontWeight: isWinner ? 700 : 500,
-                                color: isWinner ? "#fff" : "rgba(255,255,255,0.65)",
-                              }}>
-                                {name}
-                              </span>
-                              {isWinner && (
-                                <span style={{ fontSize: 13 }}>👑</span>
-                              )}
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{pct}%</span>
-                              <span style={{ fontSize: 14, fontWeight: 700, color: barColor }}>
-                                {count}
-                              </span>
-                            </div>
+                        <div className="other-row" key={name}>
+                          <span className="other-rank">{i + 3}</span>
+                          <span className="other-name">{name}</span>
+                          <div className="other-bar-track">
+                            <div className="other-bar-fill" style={{ width: `${pct}%` }} />
                           </div>
-                          {/* Vote bar */}
-                          <div style={{ height: 5, background: "rgba(255,255,255,0.06)", borderRadius: 10, overflow: "hidden" }}>
-                            <div style={{
-                              height: "100%", width: `${pct}%`,
-                              background: barColor,
-                              borderRadius: 10, transition: "width 0.5s ease",
-                            }} />
-                          </div>
+                          <span className="other-count">{count}</span>
                         </div>
                       );
                     })}
                   </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="carousel-hint">Swipe, or use the arrows, to move between categories</div>
     </div>
   );
 }
@@ -491,6 +553,94 @@ export default function PromAdminDashboard() {
         /* Results category header hover */
         .results-cat-header:hover { background: rgba(255,255,255,0.02); }
 
+        /* Results — jump-to-category dropdown */
+        .cat-dropdown {
+          position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 40;
+          background: #1a1626; border: 1px solid rgba(124,58,237,0.3); border-radius: 12px;
+          overflow: hidden; box-shadow: 0 12px 28px rgba(0,0,0,0.45); max-height: 260px; overflow-y: auto;
+        }
+        .cat-dropdown-item {
+          padding: 10px 14px; font-size: 12px; color: rgba(255,255,255,0.75); cursor: pointer;
+          display: flex; align-items: center; gap: 8px; transition: background 0.12s;
+        }
+        .cat-dropdown-item:hover { background: rgba(124,58,237,0.15); color: #fff; }
+        .cat-dropdown-empty { padding: 12px 14px; font-size: 11px; color: rgba(255,255,255,0.25); }
+
+        /* Results — prev/next carousel nav */
+        .carousel-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .carousel-btn {
+          width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+          background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+          color: #fff; font-size: 18px; cursor: pointer; transition: all 0.15s;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .carousel-btn:hover { background: rgba(124,58,237,0.2); border-color: rgba(124,58,237,0.4); color: #c4b5fd; }
+        .carousel-btn:active { transform: scale(0.94); }
+        .carousel-counter { flex: 1; text-align: center; min-width: 0; }
+        .carousel-cat-label {
+          font-size: 13px; font-weight: 700; color: #fff;
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .carousel-pos { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+        .carousel-hint { text-align: center; font-size: 10px; color: rgba(255,255,255,0.2); }
+        .duel-card-panel { touch-action: pan-y; user-select: none; }
+        .duel-card-head {
+          padding: 16px 22px; display: flex; align-items: center; justify-content: space-between;
+          border-bottom: 1px solid rgba(255,255,255,0.05); gap: 10px;
+        }
+
+        /* Results — head-to-head duel */
+        .no-votes-msg { color: rgba(255,255,255,0.2); font-size: 12px; text-align: center; padding: 12px 0; }
+        .duel-wrap {
+          display: flex; align-items: center; justify-content: center;
+          gap: 28px; padding: 4px 0 22px; flex-wrap: wrap;
+        }
+        .duel-side { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 110px; text-align: center; }
+        .duel-avatar {
+          width: 60px; height: 60px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 18px; font-weight: 800; color: #0d0b14;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.35); flex-shrink: 0;
+        }
+        .duel-name {
+          font-size: 12.5px; font-weight: 700; color: #fff;
+          max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .duel-tag { font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+        .duel-mid { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .duel-score {
+          display: flex; align-items: center; gap: 10px;
+          font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em;
+        }
+        .duel-dash { color: rgba(255,255,255,0.15); font-weight: 400; }
+        .duel-vs-badge {
+          font-size: 9px; font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.35);
+          background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+          padding: 3px 12px; border-radius: 100px;
+        }
+        .dominance-wrap { margin: 0 0 20px; }
+        .dominance-labels { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+        .dominance-caption { font-size: 9px; letter-spacing: 0.15em; color: rgba(255,255,255,0.25); font-weight: 700; }
+        .dominance-bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; }
+        .dominance-fill { height: 100%; border-radius: 10px; transition: width 0.6s ease; }
+
+        .others-wrap { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; }
+        .others-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 10px; }
+        .others-list { display: flex; flex-direction: column; gap: 9px; }
+        .other-row { display: flex; align-items: center; gap: 10px; }
+        .other-rank {
+          width: 18px; height: 18px; border-radius: 6px; background: rgba(255,255,255,0.05);
+          color: rgba(255,255,255,0.3); font-size: 9px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .other-name {
+          font-size: 11px; color: rgba(255,255,255,0.55); width: 130px; flex-shrink: 0;
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .other-bar-track { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .other-bar-fill { height: 100%; background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .other-count { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); width: 26px; text-align: right; flex-shrink: 0; }
+
         /* Right panel */
         .legend-row { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
         .legend-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -546,6 +696,15 @@ export default function PromAdminDashboard() {
           .panel-head { padding: 14px 16px 12px; }
           .tbl-controls { gap: 8px; }
           .filter-pill { padding: 5px 10px; font-size: 10px; }
+          .duel-wrap { gap: 14px; }
+          .duel-avatar { width: 48px; height: 48px; font-size: 15px; }
+          .duel-score { font-size: 1.4rem; gap: 6px; }
+          .duel-side { min-width: 90px; }
+          .duel-name { max-width: 100px; font-size: 11px; }
+          .other-name { width: 90px; }
+          .carousel-btn { width: 36px; height: 36px; font-size: 16px; }
+          .carousel-cat-label { font-size: 12px; }
+          .duel-card-head { padding: 12px 16px; }
         }
         @media (min-width: 480px) and (max-width: 700px) {
           .stats-row { grid-template-columns: repeat(2, 1fr); }
@@ -705,7 +864,7 @@ export default function PromAdminDashboard() {
                 <div className="panel-head">
                   <div>
                     <h2>Vote Results by Category</h2>
-                    <p>Click any category to see the full tally</p>
+                    <p>Click any category to see the head-to-head</p>
                   </div>
                   <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
                     {ALL_CATEGORIES.length} categories
