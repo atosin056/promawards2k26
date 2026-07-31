@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Crown, Gem, Check } from "lucide-react";
 
 // TODO: replace with your Node.js endpoint (was the PHP processvotes.php)
-const VOTE_ENDPOINT = "https://learnovabackend-awd0.onrender.com/api/vote";
+const VOTE_ENDPOINT = "https://promawards2k26backend.onrender.com/api/vote";
 
 const TOP_NOMINEES = {
   promKing: ["Ehuwa Obanla", "Olukayode Zane", "Nwadugbo Edoziem (Leke)", "Olayemi Oluwadara"],

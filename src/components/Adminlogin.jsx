@@ -18,7 +18,7 @@ export default function Adminlogin({ onLoginSuccess }) {
     setError("");
 
     try {
-      const response = await fetch("https://mobilix.com.ng/promawards/adminlogin.php", {
+      const response = await fetch("https://promawards2k26backend.onrender.com/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, password }),

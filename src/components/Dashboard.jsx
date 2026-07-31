@@ -79,7 +79,7 @@ export default function Dashboard({ seatNo }) {
   setApiError("");
 
   try {
-    const response = await fetch("https://mobilix.com.ng/promawards/submit_votes.php", {
+    const response = await fetch("https://promawards2k26backend.onrender.com/api/vote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ choices: choices, seatNo: seatNo }),

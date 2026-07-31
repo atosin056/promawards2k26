@@ -300,7 +300,7 @@ export default function PromAdminDashboard() {
 
 useEffect(() => {
   const fetchDashboard = () => {
-    fetch("https://learnovabackend-awd0.onrender.com/api/pullvotes")
+    fetch("https://promawards2k26backend.onrender.com/api/pullvotes")
       .then((r) => r.json())
       .then((res) => {
         if (res.success) {
