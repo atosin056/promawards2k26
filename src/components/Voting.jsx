@@ -1,155 +1,21 @@
 import { useState } from "react";
-import { Crown, Gem, Sparkles, Check } from "lucide-react";
+import { Crown, Gem, Check } from "lucide-react";
+
+// TODO: replace with your Node.js endpoint (was the PHP processvotes.php)
+const VOTE_ENDPOINT = "https://learnovabackend-awd0.onrender.com/api/vote";
 
 const TOP_NOMINEES = {
-  ballonDor: ["Fagbulu", "Jubril", "Azeez",],
-  // ✅ No change — Fagzzy was rank 4 (merged from raw variants, not shown in extract but 4th slot retained)
-  // ⚠️ Actually the sheet only shows 3 nominees for Ballon D'or. "Fagzzy" may need manual review.
-
-  beautyWithBrains: ["Ummayyah", "Joan", "Abioye Rodiah", "Micheal-Madukwe Shalom"],
-  // ✅ Rank 4 corrected: was "Priscilla Njoku", should be "Micheal-Madukwe Shalom"
-
-  bestFemaleDancer: ["Wiqooyat", "Akpa Miracle", "Tosin Emoruwa", "Simi"],
-  // ✅ Rank 2 corrected: was "Miracle", should be "Akpa Miracle"; Rank 3: was "Akpa Miracle", should be "Tosin Emoruwa"
-
-  bestGlowUpFemale: ["Temitope", "Tamilore", "Godfrey Grace", "Anjola"],
-  // ✅ No change
-
-  bestGlowUpMale: ["Ezun Mayowa", "Ogunba Azeez", "Kayowa", "Kelvin"],
-  // ✅ Rank 1 corrected: was "Mayowa", should be "Ezun Mayowa"; Rank 2 corrected: was "Ezun Mayowa", should be "Ogunba Azeez"
-
-  bestMaleDancer: ["Kayowa", "Zane", "Semilore", "Muhammed"],
-  // ✅ No change
-
-  bestMusicArtist: ["Nathan", "Semilore (Maylee)", "Mololuwa"],
-  // ✅ Rank 2 corrected: was "Semilore", should be "Semilore (Maylee)" (they are one nominee per sheet)
-  // ⚠️ Only 3 nominees shown in sheet for this award — "Maylee" as rank 4 may need review
-
-  bigBoldBeautiful: ["Francisca", "Tijani Kanyinsola", "Kulepa Khadijah", "Carmen"],
-  // ✅ No change
-
-  brainieeOfTheYear: ["Adedeji Victor", "Olusola Oluseyi", "Godson-Nwankwo Samuel", "Soyingbe ummayyah"],
-  // ✅ Rank 2 corrected: was "Victor", should be "Olusola Oluseyi" (ambiguous single-name votes)
-
-  businessGuruFemale: ["Abayomi Abibat", "Miracle", "Khadijah", "Shalom"],
-  // ✅ No change
-
-  businessGuruMale: ["Tosin", "Victor", "Maajid", "Obune"],
-  // ✅ No change
-
-  ebonyKing: ["Khalid", "Habeeb", "Mayowa", "Olusola Oluseyi"],
-  // ✅ Rank 4 corrected: was "Ezun oluwamayowa", should be "Olusola Oluseyi"
-
-  ebonyQueen: ["Janet", "Ramon farida", "Olokooba Aramide", "Iliasu Eniola"],
-  // ✅ Rank 4 corrected: was "Jessica", should be "Iliasu Eniola" (Jessica votes were merged under Iliasu Eniola)
-
-  fairestOfThemAllFemale: ["Rebecca", "Mary Claire", "Dora", "Shalom"],
-  // ✅ No change
-
-  fairestOfThemAllMale: ["Godson", "Justus", "Adegbesan oluwadamilola", "Erubami Eseoghene"],
-  // ✅ No change
-
-  fashionistaFemale: ["Priscilla", "Joan", "Ameera", "Akaayar Martha"],
-  // ✅ No change
-
-  fashionistaMale: ["Kelvin", "Olayemi Dara", "Fagbulu Emmanuel", "Zane"],
-  // ✅ No change
-
-  funniest: ["Okechukwu Emmanuel", "Awobolaji Andrew", "Nifemi", "Maajid"],
-  // ✅ Rank 3 corrected: was "Andrew", should be "Nifemi" (rank 4 in sheet); Rank 4 corrected: was "Nifemi", should be "Maajid" (rank 3 in sheet, but ambiguous)
-
-  lebronJames: ["Oba", "Leke", "Zane", "Ifunaya chukwuma"],
-  // ✅ No change
-
-  lifeOfThePartyFemale: ["Francisca", "Ezeji Amarachi", "Yomi-sikiru Ameera", "Miracle"],
-  // ✅ No change
-
-  lifeOfThePartyMale: ["Andrew", "Hassan Faiz", "Gbadamosi Idris", "Zane"],
-  // ✅ Rank 3 & 4 swapped: sheet rank 3 = Zane (ambiguous), rank 4 = Gbadamosi Idris — corrected order
-
-  mostAttractiveFemale: ["Grace", "Jemima", "Rodiah", "Gbede aishat"],
-  // ✅ No change
-
-  mostAttractiveMale: ["Ese", "Kelvin", "Nwadugbo David", "Godson"],
-  // ✅ No change
-
-  mostCreative: ["Zainab", "Tosin", "Odukwe ojinika", "Khadijah"],
-  // ✅ No change
-
-  mostPopularFemale: ["Carmen", "Yomi-sikiru ameera", "Jemima", "Khadija"],
-  // ✅ Rank 3 corrected: was "Yanju", should be "Jemima" (Yanju votes were merged under Jemima per sheet)
-
-  mostPopularMale: ["Obune", "Victor", "Ehuwa Obanla", "Nwadugbo David"],
-  // ✅ No change
-
-  mostSocialFemale: ["Carmen", "Yomi-sikiru ameera", "Khadija", "Ezeji Amarachi"],
-  // ✅ No change
-
-  mostSocialMale: ["Olayemi Dara", "Adedeji Victor", "Andrew", "Obune Emmanuel"],
-  // ✅ No change
-
-  mrPetite: ["Adegbesan Oluwadamilola", "Teriba Dara", "Adeyemi Samuel"],
-  // ✅ Rank 1 corrected: was "Damilola", should be "Adegbesan Oluwadamilola"; Rank 2: "Short Dara" → "Teriba Dara"; added rank 3
-
-  msPetite: ["Chizoba", "Otu favour", "Adewuyi ameerah", "Mudashiru Rodiat"],
-  // ✅ No change
-
-  // promKing: ["Zane", "Leke", "Ehuwa obanla", "Olayemi Dara"],
-  // // ✅ No change
-
-  // promQueen: ["Jemima", "Abioye Rodiah", "Gobir Maryam", "Ojinika"],
-  // ✅ No change
-
-  rookieOfTheYear: ["Ese", "Wesey", "Okusanya David", "Alex"],
-  // ✅ No change (note: "Wesey" is correct per the sheet — not "Wesley")
-
-  tobiAmusan: ["Jessica", "Makolo Deborah", "Egbowon Blessing", "Akpa Miracle"],
-  // ✅ No change
-
-  usainBolt: ["Mosimi", "Juwon", "Eniola"],
-  // ✅ No change
+  promKing: ["Ehuwa Obanla", "Olukayode Zane", "Nwadugbo Edoziem (Leke)", "Olayemi Oluwadara"],
+  promQueen: ["Aiyewumi Jemima", "Abioye Rodiah", "Gobir Maryam", "Odukwe Ojinika"],
 };
 
 const ALL_CATEGORIES = [
-  // { id: "promKing",               label: "Prom King",                          gender: "Male",   is_required: true  },
-  // { id: "promQueen",              label: "Prom Queen",                         gender: "Female", is_required: true  },
-  { id: "businessGuruMale",       label: "Business Guru Of The Year (Male)",   gender: "Male",   is_required: true  },
-  { id: "businessGuruFemale",     label: "Business Guru Of The Year (Female)", gender: "Female", is_required: true  },
-  { id: "ballonDor",              label: "Ballon D'or",                        gender: "Male",   is_required: false },
-  { id: "beautyWithBrains",       label: "Beauty With Brains",                 gender: "Female", is_required: false },
-  { id: "bestFemaleDancer",       label: "Best Female Dancer",                 gender: "Female", is_required: false },
-  { id: "bestGlowUpFemale",       label: "Best Glow Up (Female)",              gender: "Female", is_required: false },
-  { id: "bestGlowUpMale",         label: "Best Glow Up (Male)",                gender: "Male",   is_required: false },
-  { id: "bestMaleDancer",         label: "Best Male Dancer",                   gender: "Male",   is_required: false },
-  { id: "bestMusicArtist",        label: "Best Music Artist",                  gender: "Unisex", is_required: false },
-  { id: "bigBoldBeautiful",       label: "Big Bold & Beautiful",               gender: "Female", is_required: false },
-  { id: "brainieeOfTheYear",      label: "Brainee of the Year",                gender: "Unisex", is_required: false },
-  { id: "ebonyKing",              label: "Ebony King",                         gender: "Male",   is_required: false },
-  { id: "ebonyQueen",             label: "Ebony Queen",                        gender: "Female", is_required: false },
-  { id: "fairestOfThemAllFemale", label: "Fairest Of Them All (Female)",       gender: "Female", is_required: false },
-  { id: "fairestOfThemAllMale",   label: "Fairest Of Them All (Male)",         gender: "Male",   is_required: false },
-  { id: "fashionistaFemale",      label: "Fashionista (Female)",               gender: "Female", is_required: false },
-  { id: "fashionistaMale",        label: "Fashionista (Male)",                 gender: "Male",   is_required: false },
-  { id: "funniest",               label: "Funniest",                           gender: "Unisex", is_required: false },
-  { id: "lebronJames",            label: "LeBron James",                       gender: "Male",   is_required: false },
-  { id: "lifeOfThePartyFemale",   label: "Life Of The Party (Female)",         gender: "Female", is_required: false },
-  { id: "lifeOfThePartyMale",     label: "Life Of The Party (Male)",           gender: "Male",   is_required: false },
-  { id: "mostAttractiveFemale",   label: "Most Attractive (Female)",           gender: "Female", is_required: false },
-  { id: "mostAttractiveMale",     label: "Most Attractive (Male)",             gender: "Male",   is_required: false },
-  { id: "mostCreative",           label: "Most Creative",                      gender: "Unisex", is_required: false },
-  { id: "mostPopularFemale",      label: "Most Popular (Female)",              gender: "Female", is_required: false },
-  { id: "mostPopularMale",        label: "Most Popular (Male)",                gender: "Male",   is_required: false },
-  { id: "mostSocialFemale",       label: "Most Social (Female)",               gender: "Female", is_required: false },
-  { id: "mostSocialMale",         label: "Most Social (Male)",                 gender: "Male",   is_required: false },
-  { id: "mrPetite",               label: "Mr. Petite",                         gender: "Male",   is_required: false },
-  { id: "msPetite",               label: "Ms. Petite",                         gender: "Female", is_required: false },
-  { id: "rookieOfTheYear",        label: "Rookie Of The Year",                 gender: "Unisex", is_required: false },
-  { id: "tobiAmusan",             label: "Tobi Amusan",                        gender: "Female", is_required: false },
-  { id: "usainBolt",              label: "Usain Bolt",                         gender: "Male",   is_required: false },
+  { id: "promKing", label: "Prom King", gender: "Male", is_required: true },
+  { id: "promQueen", label: "Prom Queen", gender: "Female", is_required: true },
 ];
 
-const ICON_BY_GENDER = { Male: Crown, Female: Gem, Unisex: Sparkles };
-const ACCENT_PALETTE = ["#F2A93C", "#8B6CF2", "#F2884C", "#3FC9C2", "#E8556B", "#5CC2F2", "#C2E85C", "#C46CF2"];
+const ICON_BY_GENDER = { Male: Crown, Female: Gem };
+const ACCENT_PALETTE = ["#F2A93C", "#8B6CF2"];
 
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
@@ -192,23 +58,18 @@ const styles = {
   ghostBtn: { padding: "11px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#fff", fontSize: 13, cursor: "pointer", transition: "background 0.15s" },
 };
 
-function genSubmissionId() {
-  // crypto.randomUUID() is guaranteed unique — no more collisions
-  return "sub_" + crypto.randomUUID().replace(/-/g, "").slice(0, 24);
-}
-
 export default function Voting({ seatNo }) {
-  const [selections, setSelections]   = useState({});
-  const [submitted, setSubmitted]     = useState(false);
+  const [selections, setSelections] = useState({});
+  const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiError, setApiError]       = useState("");
+  const [apiError, setApiError] = useState("");
 
   const select = (catId, nominee) => {
     setSelections((prev) => ({ ...prev, [catId]: prev[catId] === nominee ? null : nominee }));
   };
 
   const requiredIds = ALL_CATEGORIES.filter((c) => c.is_required).map((c) => c.id);
-  const canSubmit   = !isSubmitting && requiredIds.every((id) => selections[id]);
+  const canSubmit = !isSubmitting && requiredIds.every((id) => selections[id]);
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -216,24 +77,24 @@ export default function Voting({ seatNo }) {
     setIsSubmitting(true);
     setApiError("");
 
+    // submission_id is now generated server-side by the Node backend
     const payload = {
-      submission_id: genSubmissionId(),
       seat_no: seatNo,
       votes: ALL_CATEGORIES
         .filter((cat) => selections[cat.id])
         .map((cat) => ({
-          category_id:  cat.id,
+          category_id: cat.id,
           nominee_name: selections[cat.id],
-          choice_rank:  1,
+          choice_rank: 1,
         })),
       submitted_at: new Date().toISOString(),
     };
 
     try {
-      const res = await fetch("https://mobilix.com.ng/promawards/processvotes.php", {
-        method:  "POST",
+      const res = await fetch(VOTE_ENDPOINT, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(payload),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
@@ -308,11 +169,11 @@ export default function Voting({ seatNo }) {
 
         <div style={{ marginTop: 44 }}>
           {ALL_CATEGORIES.map((cat, idx) => {
-            const Icon      = ICON_BY_GENDER[cat.gender] || Sparkles;
-            const accent    = ACCENT_PALETTE[idx % ACCENT_PALETTE.length];
+            const Icon = ICON_BY_GENDER[cat.gender];
+            const accent = ACCENT_PALETTE[idx % ACCENT_PALETTE.length];
             const accentSoft = accent + "24";
-            const nominees  = TOP_NOMINEES[cat.id] || [];
-            const sel       = selections[cat.id];
+            const nominees = TOP_NOMINEES[cat.id] || [];
+            const sel = selections[cat.id];
 
             return (
               <div key={cat.id}>

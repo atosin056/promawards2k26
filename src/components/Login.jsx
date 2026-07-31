@@ -460,7 +460,7 @@ export default function Login({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch("https://mobilix.com.ng/promawards/login.php", {
+      const response = await fetch("https://learnovabackend-awd0.onrender.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

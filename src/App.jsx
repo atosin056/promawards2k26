@@ -22,7 +22,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Student flow */}
-          {/* <Route
+          <Route
             path="/"
             element={
               isLoggedIn ? (
@@ -31,19 +31,19 @@ function App() {
                 <Login onLoginSuccess={handleLoginSuccess} />
               )
             }
-          /> */}
-          {/* <Route
+          />
+          <Route
             path="/"
             element={
               <Voting />
             }
-            /> */}
-          <Route
+            />
+          {/* <Route
             path="/"
             element={
               <Closed />
             }
-          />
+          /> */}
 
           {/* Admin flow */}
           <Route

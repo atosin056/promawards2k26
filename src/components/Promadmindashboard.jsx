@@ -43,40 +43,7 @@ const getInitials = (name) => {
 // All award categories (matching voting form — promKing/Queen included for results)
 const ALL_CATEGORIES = [
   { id: "promKing",               label: "Prom King" },
-  { id: "promQueen",              label: "Prom Queen" },
-  { id: "businessGuruMale",       label: "Business Guru (Male)" },
-  { id: "businessGuruFemale",     label: "Business Guru (Female)" },
-  { id: "ballonDor",              label: "Ballon D'or" },
-  { id: "beautyWithBrains",       label: "Beauty With Brains" },
-  { id: "bestFemaleDancer",       label: "Best Female Dancer" },
-  { id: "bestGlowUpFemale",       label: "Best Glow Up (Female)" },
-  { id: "bestGlowUpMale",         label: "Best Glow Up (Male)" },
-  { id: "bestMaleDancer",         label: "Best Male Dancer" },
-  { id: "bestMusicArtist",        label: "Best Music Artist" },
-  { id: "bigBoldBeautiful",       label: "Big Bold & Beautiful" },
-  { id: "brainieeOfTheYear",      label: "Brainee of the Year" },
-  { id: "ebonyKing",              label: "Ebony King" },
-  { id: "ebonyQueen",             label: "Ebony Queen" },
-  { id: "fairestOfThemAllFemale", label: "Fairest Of Them All (Female)" },
-  { id: "fairestOfThemAllMale",   label: "Fairest Of Them All (Male)" },
-  { id: "fashionistaFemale",      label: "Fashionista (Female)" },
-  { id: "fashionistaMale",        label: "Fashionista (Male)" },
-  { id: "funniest",               label: "Funniest" },
-  { id: "lebronJames",            label: "LeBron James" },
-  { id: "lifeOfThePartyFemale",   label: "Life Of The Party (Female)" },
-  { id: "lifeOfThePartyMale",     label: "Life Of The Party (Male)" },
-  { id: "mostAttractiveFemale",   label: "Most Attractive (Female)" },
-  { id: "mostAttractiveMale",     label: "Most Attractive (Male)" },
-  { id: "mostCreative",           label: "Most Creative" },
-  { id: "mostPopularFemale",      label: "Most Popular (Female)" },
-  { id: "mostPopularMale",        label: "Most Popular (Male)" },
-  { id: "mostSocialFemale",       label: "Most Social (Female)" },
-  { id: "mostSocialMale",         label: "Most Social (Male)" },
-  { id: "mrPetite",               label: "Mr. Petite" },
-  { id: "msPetite",               label: "Ms. Petite" },
-  { id: "rookieOfTheYear",        label: "Rookie Of The Year" },
-  { id: "tobiAmusan",             label: "Tobi Amusan" },
-  { id: "usainBolt",              label: "Usain Bolt" },
+  { id: "promQueen",              label: "Prom Queen" }
 ];
 
 const NAV_ITEMS = [
@@ -331,8 +298,9 @@ export default function PromAdminDashboard() {
   const [filterCat, setFilterCat] = useState("All");
   const [showSidePanel, setShowSidePanel] = useState(false);
 
-  useEffect(() => {
-    fetch("https://mobilix.com.ng/promawards/pullvotes.php")
+useEffect(() => {
+  const fetchDashboard = () => {
+    fetch("https://learnovabackend-awd0.onrender.com/api/pullvotes")
       .then((r) => r.json())
       .then((res) => {
         if (res.success) {
@@ -348,7 +316,17 @@ export default function PromAdminDashboard() {
         console.error("Dashboard load failed:", err);
         setLoading(false);
       });
-  }, []);
+  };
+
+  // Initial fetch
+  fetchDashboard();
+
+  // Poll every 5 seconds
+  const interval = setInterval(fetchDashboard, 5000);
+
+  // Cleanup
+  return () => clearInterval(interval);
+}, []);
 
   const categories = ["All", ...new Set(nominationsData.map((n) => n.category_id))];
 
