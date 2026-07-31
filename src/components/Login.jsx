@@ -447,7 +447,7 @@ export default function Login({ onLoginSuccess }) {
 
   const validate = () => {
     const e = {};
-    if (!seatNo.trim()) e.seatNo = "Seat number is required";
+    if (!seatNo) e.seatNo = "Seat number is required";
     if (!password) e.password = "Password is required";
     else if (password.length < 6) e.password = "Minimum 6 characters";
     return e;
@@ -524,7 +524,8 @@ export default function Login({ onLoginSuccess }) {
               <label className="field-label" htmlFor="email">Seat Number</label>
               <input
                 id="email"
-                type="number"
+                type="text"
+                inputMode="numeric"
                 className={`field-input ${errors.seatNo ? "has-error" : ""}`}
                 placeholder="001"
                 value={seatNo}
