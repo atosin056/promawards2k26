@@ -79,14 +79,14 @@ export default function Voting({ seatNo }) {
 
     // submission_id is now generated server-side by the Node backend
     const payload = {
-      seat_no: seatNo,
-      choices: ALL_CATEGORIES
-        .filter((cat) => selections[cat.id])
-        .map((cat) => ({
-          category_id: cat.id,
-          nominee_name: selections[cat.id],
-        })),
-    };
+  seat_no: seatNo,
+  choices: ALL_CATEGORIES
+    .filter((cat) => selections[cat.id])
+    .reduce((acc, cat) => {
+      acc[cat.id] = selections[cat.id]; // Creates key-value pairs
+      return acc;
+    }, {}),
+};
 
     try {
       const res = await fetch(VOTE_ENDPOINT, {
