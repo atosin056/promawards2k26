@@ -26,7 +26,7 @@ export default function Adminlogin({ onLoginSuccess }) {
 
       const result = await response.json();
 
-      if (response.ok && result.status === "success") {
+      if (response.ok && result.success === true) {
         onLoginSuccess();
       } else {
         setError(result.message || "Invalid credentials. Please try again.");
