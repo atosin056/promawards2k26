@@ -63,6 +63,7 @@ export default function Voting({ seatNo }) {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const select = (catId, nominee) => {
     setSelections((prev) => ({ ...prev, [catId]: prev[catId] === nominee ? null : nominee }));
@@ -79,14 +80,14 @@ export default function Voting({ seatNo }) {
 
     // submission_id is now generated server-side by the Node backend
     const payload = {
-  seat_no: seatNo,
-  choices: ALL_CATEGORIES
-    .filter((cat) => selections[cat.id])
-    .reduce((acc, cat) => {
-      acc[cat.id] = selections[cat.id]; // Creates key-value pairs
-      return acc;
-    }, {}),
-};
+      seat_no: seatNo,
+      choices: ALL_CATEGORIES
+        .filter((cat) => selections[cat.id])
+        .reduce((acc, cat) => {
+          acc[cat.id] = selections[cat.id]; // Creates key-value pairs
+          return acc;
+        }, {}),
+    };
 
     try {
       const res = await fetch(VOTE_ENDPOINT, {
@@ -97,7 +98,9 @@ export default function Voting({ seatNo }) {
 
       const result = await res.json();
 
-      if (res.ok && result.status === "success") {
+      // NOTE: backend returns `success: true/false`, not `status: "success"`
+      if (res.ok && result.success) {
+        setSuccessMessage(result.message || "Your ballot has been submitted!");
         setSubmitted(true);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (res.status === 403) {
@@ -132,7 +135,7 @@ export default function Voting({ seatNo }) {
           </div>
           <h2 style={{ fontSize: 26, fontWeight: 800, margin: 0 }}>Ballot submitted!</h2>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13.5, margin: 0 }}>
-            Thanks for voting, Class of 2026. Results announced at the ceremony.
+            {successMessage}
           </p>
         </div>
       </div>

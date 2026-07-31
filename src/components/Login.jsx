@@ -466,8 +466,8 @@ export default function Login({ onLoginSuccess }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          seat_no: seatNo.trim(), 
-          password: password.trim()
+          seat_no: seatNo, 
+          password: password
         })
       });
 
@@ -478,11 +478,11 @@ export default function Login({ onLoginSuccess }) {
         setSuccess(true); 
         
         if (remember) {
-          localStorage.setItem("remembered_seat", data.seatNo);
+          localStorage.setItem("remembered_seat", data.seat_no);
         }
 
         setTimeout(() => {
-          onLoginSuccess(data.seatNo);
+          onLoginSuccess(data.seat_no);
         }, 1200);
 
       } else {
