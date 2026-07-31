@@ -80,14 +80,12 @@ export default function Voting({ seatNo }) {
     // submission_id is now generated server-side by the Node backend
     const payload = {
       seat_no: seatNo,
-      votes: ALL_CATEGORIES
+      choices: ALL_CATEGORIES
         .filter((cat) => selections[cat.id])
         .map((cat) => ({
           category_id: cat.id,
           nominee_name: selections[cat.id],
-          choice_rank: 1,
         })),
-      submitted_at: new Date().toISOString(),
     };
 
     try {
