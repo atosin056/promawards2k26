@@ -460,12 +460,14 @@ export default function Login({ onLoginSuccess }) {
     setLoading(true);
 
     try {
+      console.log(seatNo);
+      console.log(password);
       const response = await fetch("https://promawards2k26backend.onrender.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          seatNo: seatNo, 
-          password: password 
+          seat_no: seatNo.trim(), 
+          password: password.trim()
         })
       });
 
