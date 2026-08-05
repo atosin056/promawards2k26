@@ -5,15 +5,19 @@ import { Crown, Gem, Check } from "lucide-react";
 const VOTE_ENDPOINT = "https://promawards2k26backend.onrender.com/api/vote";
 
 const TOP_NOMINEES = {
-  // promKing: ["Ehuwa Obanla", "Olukayode Zane", "Nwadugbo Edoziem (Leke)", "Olayemi Oluwadara"],
-  promKing: ["Test user 1", "Test user 2", "Test user 3", "Test user 4"],
-  // promQueen: [
-  //   "Aiyewumi Jemima",
-  //   "Abioye Rodiah",
-  //   "Gobir Maryam",
-  //   "Odukwe Ojinika",
-  // ],
-  promQueen: ["lol ", "random", "test", "bleh"],
+  promKing: [
+    "Ehuwa Obanla",
+    "Olukayode Zane",
+    "Nwadugbo Edoziem (Leke)",
+    "Olayemi Oluwadara",
+  ],
+  // promKing: ["Test user 1", "Test user 2", "Test user 3", "Test user 4"],
+  promQueen: [
+    "Aiyewumi Jemima",
+    "Abioye Rodiah",
+    "Gobir Maryam",
+    "Odukwe Ojinika",
+  ],
 };
 
 const ALL_CATEGORIES = [
